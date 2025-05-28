@@ -1,0 +1,14 @@
+target/
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+README.md
+*.iml
+.idea/
+*.log
+*.class
+*.jar
+*.war
+*.db
+*.swp
