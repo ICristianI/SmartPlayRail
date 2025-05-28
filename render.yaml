@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: smartplay-app
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: MYSQLHOST
+        value: your-mysql-host
+      - key: MYSQLPORT
+        value: 3306
+      - key: MYSQLDATABASE
+        value: smartplaydb
+      - key: MYSQLUSER
+        value: your-username
+      - key: MYSQLPASSWORD
+        value: your-password
+
+databases:
+  - name: smartplaydb
+    databaseName: smartplaydb
+    user: your-username
