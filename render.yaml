@@ -1,23 +1,35 @@
 services:
   - type: web
-    name: smartplay-app
+    name: smartplay-backend
     env: docker
     plan: free
+    autoDeploy: true
     region: oregon
-    dockerfilePath: ./Dockerfile
     envVars:
       - key: MYSQLHOST
-        value: your-mysql-host
+        fromDatabase:
+          name: smartplaydb
+          property: host
       - key: MYSQLPORT
-        value: 3306
+        fromDatabase:
+          name: smartplaydb
+          property: port
       - key: MYSQLDATABASE
-        value: smartplaydb
+        fromDatabase:
+          name: smartplaydb
+          property: database
       - key: MYSQLUSER
-        value: your-username
+        fromDatabase:
+          name: smartplaydb
+          property: user
       - key: MYSQLPASSWORD
-        value: your-password
+        fromDatabase:
+          name: smartplaydb
+          property: password
+      - key: SPRING_MAIL_PASSWORD
+        value: unew wlkb qzmf ctwq
 
 databases:
   - name: smartplaydb
     databaseName: smartplaydb
-    user: your-username
+    user: admin
