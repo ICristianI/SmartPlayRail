@@ -1,0 +1,87 @@
+{{> header}}
+
+<div class="container mt-4" >
+  <div class="d-flex align-items-center justify-content-between mb-4" id="ContenidoTutorial">
+    <h1 class="mb-0">Crear Ficha Interactiva</h1>
+    <button class="btn btn-secondary" onclick="window.history.back();">
+      Volver
+    </button>
+  </div>
+
+  <form action="/f/guardar" method="POST" enctype="multipart/form-data" class="shadow p-4 rounded">
+    <input type="hidden" name="_csrf" value="{{token}}"/>
+    <input type="hidden" name="elementosSuperpuestos" value="null" />
+
+    
+    <!-- Nombre de la ficha -->
+    <div class="mb-3" id="nombreFichaTutorial">
+      <label for="nombre" class="form-label">Nombre de la Ficha</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe el nombre de la ficha"
+        maxlength="40" required />
+    </div>
+
+    <!-- Idioma -->
+    <div class="mb-3" id="idiomaFichaTutorial">
+      <label for="idioma" class="form-label">Idioma</label>
+      <input type="text" class="form-control" id="idioma" name="idioma" placeholder="Ej: Español, Inglés" maxlength="20"
+        required />
+    </div>
+
+    <!-- Asignatura -->
+    <div class="mb-3" id="asignaturaFichaTutorial">
+      <label for="asignatura" class="form-label">Asignatura</label>
+      <input type="text" class="form-control" id="asignatura" name="asignatura" placeholder="Ej: Matemáticas, Ciencias"
+        maxlength="30" required />
+    </div>
+
+    <!-- Contenido -->
+    <div class="mb-3" id="contenidoFichaTutorial">
+      <label for="contenido" class="form-label">Contenido</label>
+      <textarea class="form-control" id="contenido" name="contenido" rows="3"
+        placeholder="Describe el contenido de la ficha" maxlength="500" required></textarea>
+    </div>
+
+    <!-- Descripción -->
+    <div class="mb-3" id="descripcionFichaTutorial">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea class="form-control" id="descripcion" name="descripcion" rows="3"
+        placeholder="Breve descripción de la ficha" maxlength="150" required></textarea>
+    </div>
+
+    <!-- Imagen de fondo -->
+    <div class="mb-3" id="imagenFichaTutorial">
+      <label for="A" class="form-label">Imagen de Fondo. Max 5 Mb</label>
+      <div class="d-flex flex-column align-items-center">
+        <!-- Previsualización de la imagen -->
+        <div class="border border-secondary rounded mb-3" style="width: 200px; height: 150px; overflow: hidden">
+          <img id="previewImagen" src="" alt="Vista previa" class="w-100 h-100 object-cover" style="display: none" />
+        </div>
+        <!-- Botón personalizado para subir la imagen -->
+        <label for="imagenFondo" class="btn btn-primary navbar-custom">
+          Seleccionar Imagen
+          <input type="file" class="d-none" id="imagenFondo" name="imagenFondo" accept="image/*" onchange="mostrarVistaPrevia(event)"
+            required />
+        </label>
+      </div>
+      <small class="form-text text-muted text-center">Selecciona una imagen que servirá como fondo para la
+        ficha.</small>
+    </div>
+
+        <!-- Privacidad de la ficha -->
+    <div class="form-check form-switch mb-4" id="privacidadFichaTutorial">
+      <input class="form-check-input" type="checkbox" id="privada" name="privada" value="true">
+      <label class="form-check-label" for="privada">Ficha privada (solo tú podrás verla)</label>
+    </div>
+
+
+    <!-- Botón para guardar -->
+    <div class="text-center" >
+      <button type="submit" class="btn btn-primary navbar-custom" id="guardarFichaTutorial">
+        Guardar Ficha
+      </button>
+    </div>
+  </form>
+</div>
+<script src="/js/ImagenPreview.js"></script>
+
+{{> footer}}

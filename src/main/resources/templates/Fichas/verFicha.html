@@ -1,0 +1,207 @@
+{{> header}}
+
+<div class="container mt-5">
+  <div class="row align-items-center">
+    <!-- Columna izquierda -->
+    <div class="col-md-8" id="Contenido">
+
+      <div class="d-flex justify-content-between align-items-center mt-4 px-2">
+        <small class="text-muted"><strong>Creada el:</strong> {{fechaFormateada}}</small>
+        <small class="text-danger" style="font-size: 1.1rem;">❤️ {{ficha.meGusta}}</small>
+      </div>
+
+      <h1>{{ficha.nombre}}</h1>
+
+      <p class="text-break"><strong>Idioma:</strong> {{ficha.idioma}}</p>
+      <p class="text-break"><strong>Asignatura:</strong> {{ficha.asignatura}}</p>
+      <p class="text-break"><strong>Descripción:</strong></p>
+      <div class="descripcion-cuadro p-3 border rounded bg-light word-wrap-break">
+        {{ficha.descripcion}}
+      </div>
+      
+      <p class="text-break"><strong>Contenido:</strong></p>
+      <div class="descripcion-cuadro p-3 border rounded bg-light mb-3 word-wrap-break">
+        {{ficha.contenido}}
+      </div>
+      
+
+      <p class="text-break" id="Privacidad">
+        <strong>Privacidad:</strong>
+        {{#ficha.privada}}<span class="badge bg-danger">Privada</span>{{/ficha.privada}}
+        {{^ficha.privada}}<span class="badge bg-success">Pública</span>{{/ficha.privada}}
+      </p>
+      
+
+      <!-- Mensajes -->
+      {{#error}}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <p>{{error}}</p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {{/error}}
+
+      {{#mensaje}}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <p>{{mensaje}}</p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {{/mensaje}}
+
+      <!-- Botones -->
+      <button class="btn btn-primary navbar-custom mt-3" id="EditForm" onclick="toggleEditForm()">Editar Ficha</button>
+
+      <!-- Formulario de edición -->
+      <form id="editForm" action="/f/editar" method="post" style="display: none;">
+        <input type="hidden" name="_csrf" value="{{token}}" />
+        <input type="hidden" name="fichaId" value="{{ficha.id}}" />
+
+        <div class="mt-3">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="nombre" name="nombre" maxlength="40" value="{{ficha.nombre}}" required />
+        </div>
+
+        <div class="mt-3">
+          <label for="idioma" class="form-label">Idioma</label>
+          <input type="text" class="form-control" id="idioma" name="idioma" maxlength="20" value="{{ficha.idioma}}" required />
+        </div>
+
+        <div class="mt-3">
+          <label for="asignatura" class="form-label">Asignatura</label>
+          <input type="text" class="form-control" id="asignatura" name="asignatura" maxlength="30" value="{{ficha.asignatura}}" required />
+        </div>
+
+        <div class="mt-3">
+          <label for="contenido" class="form-label">Contenido</label>
+          <textarea class="form-control" id="contenido" name="contenido" maxlength="500" required>{{ficha.contenido}}</textarea>
+        </div>
+
+        <div class="mt-3">
+          <label for="descripcion" class="form-label">Descripción</label>
+          <textarea class="form-control" id="descripcion" name="descripcion" maxlength="150" required>{{ficha.descripcion}}</textarea>
+        </div>
+
+        <div class="form-check form-switch mt-3">
+          <input class="form-check-input" type="checkbox" id="privada" name="privada" value="true" {{#ficha.privada}}checked{{/ficha.privada}}>
+          <label class="form-check-label" for="privada">Ficha privada</label>
+        </div>
+        
+        <button type="submit" class="btn btn-success mt-3">Guardar Cambios</button>
+      </form>
+
+      <!-- Boton para añadir elementos a la ficha -->
+      <form action="/f/irModificarFicha" method="post">
+        <input type="hidden" name="_csrf" value="{{token}}" />
+        <input type="hidden" name="fichaId" value="{{ficha.id}}" />
+        <button type="submit" class="btn btn-warning mt-3" id="anadirElementos">Añadir Elementos a la Ficha</button>
+      </form>
+
+      <!-- Botón para resolver la ficha interactiva -->
+      <form action="/f/verFichaInteractiva" method="get">
+        <input type="hidden" name="fichaId" value="{{ficha.id}}" />
+        <button type="submit" class="btn btn-primary mt-3" id="resolverFicha">Resolver Ficha</button>
+      </form>
+
+      <!-- Eliminar ficha -->
+      <form action="/f/eliminar" method="post" onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta ficha? Esta acción no se puede deshacer.');">
+        <input type="hidden" name="_csrf" value="{{token}}" />
+        <input type="hidden" name="fichaId" value="{{ficha.id}}" />
+        <button type="submit" class="btn btn-danger mt-3" id="btnEliminarFicha">Eliminar Ficha</button>
+      </form>
+
+      <!-- Volver -->
+      <form action="/f/listarFichas" method="get">
+        <button type="submit" class="btn btn-secondary mt-3" id="btnVolverListado">Volver</button>
+      </form>
+    </div>
+
+    <!-- Columna imagen -->
+    <div class="col-md-4 text-center">
+      {{#ficha.imagen}}
+      <img src="/f/ficha/image/{{ficha.id}}" alt="Imagen de la ficha" class="img-fluid" style="max-width: 100%; height: auto; border: 1px solid #ddd; padding: 10px; object-fit: cover;" />
+      {{/ficha.imagen}}
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- Cuadernos -->
+  <h3 class="mt-5 mb-4">Esta ficha pertenece a los siguientes cuadernos:</h3>
+  <div class="row" id="contenedorCuadernos">
+    {{#cuadernos}}
+    <div class="col-md-4" id="contenedorCuadernos">
+      <div class="card h-100 shadow-sm position-relative">
+        <img
+          src="/cuadernos/image/{{id}}"
+          class="card-img-top"
+          alt="Vista previa del cuaderno"
+          style="height: 150px; object-fit: cover"
+          onerror="this.onerror=null; this.src='/images/generalImages/CuadernoDefault.jpg';"
+        />
+        <div class="card-body text-center px-3 py-4">
+          <h5 class="card-title">{{nombre}}</h5>
+          <p class="card-text text-muted"><strong>Propietario:</strong> {{usuario.nombre}}</p>
+          <p class="card-text text-muted">{{numeroFichas}} fichas | {{numeroJuegos}} juegos</p>
+      
+          <form action="/cuadernos/ver" method="post">
+            <input type="hidden" name="_csrf" value="{{token}}" />
+            <input type="hidden" name="cuadernoId" value="{{id}}" />
+            <button type="submit" class="btn btn-primary navbar-custom w-100">Ver Cuaderno</button>
+          </form>
+        </div>
+      </div>
+      
+    </div>
+    {{/cuadernos}}
+  </div>
+
+
+  <nav aria-label="Paginación Cuadernos" id="navPaginacionCuadernos">
+    {{#pages}}
+    <p class="text-center mt-2">Página {{currentPage}} de {{totalPages}}</p>
+    {{/pages}}
+  
+    <input type="hidden" id="pageSizeCuadernos" value="3" />
+    <ul class="pagination justify-content-center mt-3">
+      {{#hasPrevCuadernos}}
+      <li class="page-item">
+        <button class="btn btn-secondary" data-page="{{prevPageCuadernos}}" onclick="cargarPagina(this, 'cuadernos')">Anterior</button>
+      </li>
+      {{/hasPrevCuadernos}}
+  
+      {{#hasNextCuadernos}}
+      <li class="page-item">
+        <button class="btn btn-secondary" data-page="{{nextPageCuadernos}}" onclick="cargarPagina(this, 'cuadernos')">Siguiente</button>
+      </li>
+      {{/hasNextCuadernos}}
+    </ul>
+  </nav>
+  
+
+  <!-- Si no hay cuadernos -->
+  {{^cuadernos}}
+  <div class="alert alert-warning text-center mt-4">
+    <p>Esta ficha no pertenece a ningún cuaderno.</p>
+    <a href="/cuadernos/crear" class="btn btn-primary navbar-custom">Crear un Cuaderno</a>
+  </div>
+  {{/cuadernos}}
+</div>
+
+<!-- Script para manejar el formulario de edición -->
+ 
+<script>
+  function toggleEditForm() {
+    const form = document.getElementById("editForm");
+    const btn = document.getElementById("btnEditarFicha");
+    const visible = form.style.display !== "none";
+    form.style.display = visible ? "none" : "block";
+    btn.textContent = visible ? "Editar Ficha" : "Cancelar Edición";
+  }
+</script>
+
+<script src="/js/PaginacionAJAX.js"></script>
+
+{{> footer}}

@@ -1,0 +1,111 @@
+{{> header}}
+
+<div class="container mt-4">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="mb-0">Crear Juego de Ahorcado</h1>
+    <button class="btn btn-secondary" onclick="window.history.back();">
+      Volver
+    </button>
+  </div>
+
+  <div id="crear-ahorcado-container">
+
+  <form action="/ahorcado/guardar" method="POST" enctype="multipart/form-data" class="shadow p-4 rounded">
+    <input type="hidden" name="_csrf" value="{{token}}"/>
+
+    <!-- Nombre del juego -->
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre del Juego</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe el nombre del juego"
+        maxlength="40" required />
+    </div>
+
+    <!-- Idioma -->
+    <div class="mb-3">
+      <label for="idioma" class="form-label">Idioma</label>
+      <input type="text" class="form-control" id="idioma" name="idioma" placeholder="Ej: Español, Inglés" maxlength="20"
+        required />
+    </div>
+
+    <!-- Asignatura -->
+    <div class="mb-3">
+      <label for="asignatura" class="form-label">Asignatura</label>
+      <input type="text" class="form-control" id="asignatura" name="asignatura" placeholder="Ej: Matemáticas, Ciencias"
+        maxlength="30" required />
+    </div>
+
+    <!-- Contenido -->
+    <div class="mb-3">
+      <label for="contenido" class="form-label">Contenido</label>
+      <textarea class="form-control" id="contenido" name="contenido" rows="3"
+        placeholder="Describe el contenido del juego" maxlength="500" required></textarea>
+    </div>
+
+    <!-- Descripción -->
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea class="form-control" id="descripcion" name="descripcion" rows="3"
+        placeholder="Breve descripción del juego" maxlength="150" required></textarea>
+    </div>
+
+    <!-- Privacidad del juego -->
+    <div class="form-check form-switch mb-4">
+      <input class="form-check-input" type="checkbox" id="privada" name="privada" value="true">
+      <label class="form-check-label" for="privada">Juego privado (solo tú podrás verlo)</label>
+    </div>
+    <!-- Imagen del juego -->
+    <div class="mb-3">
+      <label class="form-label">Imagen del Juego. Max 5 Mb</label>
+      <div class="d-flex flex-column align-items-center">
+        <div id="imagen-juego-ahorcado" class="border border-secondary rounded mb-3" style="width: 200px; height: 150px; overflow: hidden">
+          <img id="previewImagen" src="/images/generalImages/CREARAHORCADO.png" alt="Vista previa"
+            class="w-100 h-100 object-cover" />
+        </div>
+        <label for="imagenJuego" class="btn btn-primary navbar-custom">
+          Seleccionar Imagen
+          <input type="file" class="d-none" id="imagenJuego" name="imagenJuego" accept="image/*" onchange="mostrarVistaPrevia(event)" />
+        </label>
+      </div>
+      <small class="form-text text-muted text-center">
+        Selecciona una imagen representativa para el juego (opcional).
+      </small>
+    </div>
+
+    <!-- Palabra para el juego -->
+    <div class="mb-3" id="palabra-secreta">
+      <label for="palabra" class="form-label">Palabra Secreta (Max 15 Letras)</label>
+
+      <input type="text" class="form-control" id="palabra" name="palabra"
+        placeholder="Escribe la palabra que se debe adivinar" pattern="[A-Za-z]+" maxlength="15" required />
+    </div>
+
+    <!-- Número máximo de intentos -->
+    <div class="mb-3" id="input-intentos">
+      <label for="maxIntentos" class="form-label">Número Máximo de Intentos</label>
+      <div class="input-group">
+        <button type="button" class="btn btn-outline-secondary" onclick="cambiarIntentos(-1)">
+          -
+        </button>
+        <input type="number" class="form-control text-center" id="maxIntentos" name="maxIntentos" value="6" min="1"
+          max="15" readonly />
+        <button type="button" class="btn btn-outline-secondary" onclick="cambiarIntentos(1)">
+          +
+        </button>
+      </div>
+    </div>
+
+    <!-- Botón para guardar -->
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary navbar-custom">
+        Guardar Juego
+      </button>
+    </div>
+  </form>
+  </div>
+</div>
+
+<script src="/js/size.js"></script>
+<script src="/js/validacionAhorcado.js"></script>
+<script src="/js/ImagenPreview.js"></script>
+
+{{> footer}}

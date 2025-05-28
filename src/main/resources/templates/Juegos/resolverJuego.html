@@ -1,0 +1,128 @@
+{{> header}}
+
+<div class="container mt-5 text-center">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0 text-start">{{juego.nombre}}</h1>
+  </div>
+
+  <!-- AHORCADO -->
+  {{#esAhorcado}}
+  <div class="mb-3">
+    <img src="/images/generalImages/imagenAhorcado.png" alt="Ahorcado" class="img-fluid rounded shadow navbar-custom" style="max-height: 250px;">
+  </div>
+  <p><strong>Intentos restantes:</strong> <span id="intentosRestantes">{{ juego.maxIntentos }}</span></p>
+  <div id="palabraAdivinada" class="d-flex justify-content-center flex-wrap mb-4"></div>
+  <div id="teclado" class="d-flex flex-column align-items-center"></div>
+  <button class="btn btn-primary mt-4" onclick="reiniciarJuego()">Reiniciar Juego</button>
+    {{^hasNext}}
+    <a href="/grupos/ver" class="btn btn-success mt-4">Terminar</a>
+    {{/hasNext}}
+  <div id="mensaje" class="mt-4"></div>
+  
+  {{/esAhorcado}}
+
+  <!-- CRUCIGRAMA -->
+  {{#esCrucigrama}}
+  <div id="crucigramaContainerWrapper" class="d-flex justify-content-center flex-wrap mt-4">
+    <div id="crucigrama" class="mb-4"></div>
+  </div>
+  <h4 class="mt-5">Pistas:</h4>
+  <ul id="listaPistas" class="list-group list-group-flush text-start mx-auto" style="max-width: 600px;">
+    {{#pistasRespuestas}}
+    <li class="list-group-item"><strong>{{@index + 1}}.</strong> {{pista}}</li>
+    {{/pistasRespuestas}}
+  </ul>
+  <button class="btn btn-success mt-4" onclick="verificarRespuestas()">Verificar Respuestas</button>
+  <button class="btn btn-primary mt-4" onclick="reiniciarCrucigrama()">Reiniciar Juego</button>
+
+  <div id="mensajeCrucigrama" class="mt-4"></div>
+  {{^hasNext}}
+    <a href="/grupos/ver" class="btn btn-success mt-4 ">Terminar</a>
+  {{/hasNext}}
+  {{/esCrucigrama}}
+
+  <!-- SOPA DE LETRAS -->
+  {{#esSopaLetras}}
+  <div id="sopaContainerWrapper" class="d-flex justify-content-center flex-wrap mt-3">
+    <div id="sopaDeLetras" class="mb-4"></div>
+  </div>
+  <h4 class="mt-5">Palabras a encontrar:</h4>
+  <ul id="listaPalabras" class="list-group list-group-horizontal justify-content-center"></ul>
+  <div class="mt-4" id="dificultadContainer">
+    <label for="dificultad" class="fw-bold">Selecciona la dificultad:</label>
+    <select id="dificultad" class="form-select w-auto d-inline-block mx-2" onchange="seleccionarDificultad(this.value)">
+      <option value="normal" selected>Normal (10x10)</option>
+      <option value="dificil">Difícil (15x15)</option>
+    </select>
+  </div>
+  <button class="btn btn-primary mt-4" onclick="reiniciarJuego()">Reiniciar Juego</button>
+
+  {{^hasNext}}
+    <a href="/grupos/ver" class="btn btn-success mt-4">Terminar</a>
+  {{/hasNext}}
+  <div id="mensaje" class="mt-4"></div>
+  {{/esSopaLetras}}
+
+
+  <!-- Paginación -->
+  <nav aria-label="Paginación de Juegos" class="mt-4">
+    <ul class="pagination justify-content-center">
+      {{#hasPrev}}
+      <li class="page-item">
+        <a class="btn btn-secondary" href="/cuadernos/resolverJuegos?page={{prevPage}}">Anterior</a>
+      </li>
+      {{/hasPrev}}
+
+      {{#hasNext}}
+      <li class="page-item">
+        <a class="btn btn-secondary" href="/cuadernos/resolverJuegos?page={{nextPage}}">Siguiente</a>
+      </li>
+      {{/hasNext}}
+    </ul>
+  </nav>
+
+  <p class="mb-0 text-muted">Juego {{paginaActual}} de {{totalJuegos}}</p>
+
+
+</div>
+
+
+<!-- Scripts específicos para cada juego y sus datos asociados -->
+{{#esAhorcado}}
+
+<script>
+  let juego = {
+      palabra: "{{ juego.palabra }}",
+      maxIntentos: "{{ juego.maxIntentos }}",
+      nombre: "{{ juego.nombre }}",
+      descripcion: "{{ juego.descripcion }}"
+  };
+</script>
+<script src="/js/ahorcado.js"></script>
+{{/esAhorcado}}
+{{#esCrucigrama}}
+<script>
+  juego = {
+      pistas: "{{{juego.pistas}}}",
+      respuestas: "{{{juego.respuestas}}}",
+      nombre: "{{juego.nombre}}",
+      descripcion: "{{juego.descripcion}}"
+  };
+</script>
+<script src="/js/crucigrama.js"></script>
+{{/esCrucigrama}}
+{{#esSopaLetras}}
+<script>
+  juego = {
+      palabras: JSON.parse(`{{{ juego.palabras }}}`),
+      nombre: "{{ juego.nombre }}",
+      descripcion: "{{ juego.descripcion }}"
+  };
+  console.log("Juego cargado:", juego);
+</script>
+<script src="/js/sopaLetras.js"></script>
+{{/esSopaLetras}}
+
+<script src="/js/like.js"></script>
+
+{{> footer}}

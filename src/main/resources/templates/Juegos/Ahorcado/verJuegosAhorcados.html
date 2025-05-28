@@ -1,0 +1,93 @@
+{{> header}}
+
+<div class="container mt-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h1 class="text-center mt-5" id="titulo-ahorcado">Mis Juegos de Ahorcado</h1>
+        <div class="text-center mt-4">
+            <a href="/ahorcado" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
+
+    <!-- Mensajes de éxito y error -->
+    {{#error}}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <p>{{error}}</p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {{/error}} {{#mensaje}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <p>{{mensaje}}</p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {{/mensaje}}
+
+    <!-- Visualizador de juegos de ahorcado en lista y tarjeta -->
+    <div class="row">
+        {{#juegos}}
+        <div class="col-md-4 mb-4" id="zona-juegos-ahorcado">
+          <div class="card h-100 shadow-sm position-relative">
+            <img src="/juegos/image/{{id}}" 
+              class="card-img-top"
+              alt="Vista previa del juego"
+              style="height: 150px; object-fit: cover"
+            />
+            <div class="card-body text-center px-3 py-4">
+              <h5 class="card-title">{{nombre}}</h5>
+              <p class="card-text text-muted">{{asignatura}}</p>
+              <p class="card-text"><strong>Intentos:</strong> {{maxIntentos}}</p>
+      
+              <form action="/juegos/redirigirJuego" method="post">
+                <input type="hidden" name="_csrf" value="{{token}}" />
+                <input type="hidden" name="juegoId" value="{{id}}" />
+                <input type="hidden" name="modo" value="ver" />
+                <button type="submit" class="btn btn-primary navbar-custom">Ver Juego</button>
+              </form>
+            </div>
+      
+            <!-- Pie con fecha y me gusta -->
+            <div class="card-footer d-flex justify-content-between align-items-center px-3 py-2">
+              <small class="text-muted">{{fechaFormateada}}</small>
+              <small class="text-danger" style="font-size: 1.1rem;">❤️ {{meGusta}}</small>
+            </div>
+          </div>
+        </div>
+        {{/juegos}}
+      </div>
+      
+    <!-- Si no hay juegos, mostrar mensaje -->
+    {{^juegos}}
+    <div class="text-center mt-5" id="crear-ahorcado">
+        <p class="text-muted">Aún no has creado ningún juego de ahorcado.</p>
+        <a href="/ahorcado/crear" class="btn btn-success">Crear un juego</a>
+    </div>
+    {{/juegos}}
+
+    <!-- PAGINACIÓN -->
+    {{#totalPages}}
+    <nav aria-label="Paginación" id="navPaginacion">
+        <input type="hidden" id="pageSize" value="6" />
+
+        {{#pages}}
+        <p class="text-center mt-2">Página {{currentPage}} de {{totalPages}}</p>
+        {{/pages}}
+
+        <ul class="pagination justify-content-center mt-3">
+            {{#hasPrev}}
+            <li class="page-item">
+                <a class="btn btn-secondary" href="?page={{prevPage}}">Anterior</a>
+            </li>
+            {{/hasPrev}} {{#hasNext}}
+            <li class="page-item">
+                <a class="btn btn-secondary" href="?page={{nextPage}}">Siguiente</a>
+            </li>
+            {{/hasNext}}
+        </ul>
+    </nav>
+    {{/totalPages}}
+</div>
+
+{{> footer}}

@@ -1,0 +1,324 @@
+{{> header}}
+
+<div class="container mt-4" >
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="text-center mt-5">Grupo: {{grupo.nombre}}</h1>
+    <div class="text-center mt-4">
+      <a href="/grupos" class="btn btn-secondary">Volver</a>
+    </div>
+  </div>
+
+  <!-- Mensajes -->
+  {{#error}}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{error}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+      <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+  {{/error}}
+
+  {{#mensaje}}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{mensaje}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+      <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+  {{/mensaje}}
+
+  <div class="row" id="titulo-grupo">
+    <div class="col-md-8">
+      <p><strong>Propietario:</strong> {{grupo.creador.nombre}}</p>
+      <p><strong>Descripción:</strong> {{grupo.descripcion}}</p>
+      <p><strong>Fecha de creación:</strong> {{fechaFormateada}}</p>
+      <p><strong>Número de usuarios:</strong> {{numUsuarios}}</p>
+      <p><strong>Número de cuadernos:</strong> {{numCuadernos}}</p>
+
+
+      <!-- Botón para mostrar el código del grupo -->
+  <div class="mb-3" id="codigoGrupoTutorial">
+    <label class="form-label">Código de acceso para unirse:</label>
+    <div class="input-group position-relative">
+      <input type="text" class="form-control" id="codigoGrupo" value="{{grupo.codigoAcceso}}" readonly title="Código de acceso del grupo" placeholder="Código de acceso">
+      <button class="btn btn-outline-primary" type="button" onclick="copiarCodigo(this)">
+        <i class="bi bi-clipboard"></i> Copiar
+      </button>
+      
+      <!-- Mensaje de copiado -->
+      <div id="mensajeCopiado" class="position-absolute top-0 end-0 bg-success text-white px-2 py-1 rounded fade"
+           style="z-index: 10; transform: translateY(-100%); font-size: 0.85rem; display: none;">
+        ¡Copiado!
+      </div>
+    </div>
+  </div>
+  
+  {{#isPropietario}}
+
+      <!-- Botón editar -->
+      <button class="btn btn-primary navbar-custom mt-3" onclick="toggleEditForm()" id="editFormTutorial">Editar Grupo</button>
+
+      <!-- Botón eliminar grupo -->
+       <div id="eliminarTutorial">
+      <form action="/grupos/eliminar" method="post" class="mt-3" onsubmit="return confirmarEliminacion();">
+        <input type="hidden" name="_csrf" value="{{token}}" />
+        <input type="hidden" name="grupoId" value="{{grupo.id}}" />
+        <button type="submit" class="btn btn-danger">Eliminar Grupo</button>
+      </form>
+    </div>
+  {{/isPropietario}}
+      
+
+      <!-- Formulario de edición -->
+<form id="editForm" action="/grupos/editar" method="post" style="display: none" class="mt-4">
+    <input type="hidden" name="_csrf" value="{{token}}" />
+    <input type="hidden" name="grupoId" value="{{grupo.id}}" />
+  
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" value="{{grupo.nombre}}" required />
+    </div>
+  
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea class="form-control" id="descripcion" name="descripcion" rows="3">{{grupo.descripcion}}</textarea>
+    </div>
+  
+    <!-- Botón y modal para seleccionar cuadernos -->
+    <div class="mb-3">
+      <label class="form-label">Seleccionar Cuadernos</label>
+      <button type="button" class="btn btn-primary navbar-custom" data-toggle="modal" data-target="#cuadernoModal">
+        Elegir Cuadernos
+      </button>
+      
+    </div>
+  
+    <!-- Cuadernos seleccionados -->
+    <div class="mb-3">
+      <label class="form-label">Cuadernos Seleccionados</label>
+      <ul id="listaCuadernos" class="list-group"></ul>
+    </div>
+  
+    <input type="hidden" name="cuadernosSeleccionados" id="cuadernosSeleccionados" />
+  
+    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+  </form>
+  
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- Cuadernos del grupo -->
+  <div class="d-flex justify-content-between align-items-center">
+    <h3 class="mt-4 mb-3">Cuadernos del Grupo</h3>
+  </div>
+
+  <div class="row" id="contenedorCuadernos">
+    {{#cuadernosPage}}
+    <div class="col-md-4" id="contenedorCuadernosTutorial">
+      <div class="card h-100 shadow-sm position-relative">
+        <img
+          src="/cuadernos/image/{{id}}"
+          class="card-img-top"
+          alt="Vista previa del cuaderno"
+          style="height: 150px; object-fit: cover"
+          onerror="this.onerror=null; this.src='/images/generalImages/CuadernoDefault.jpg';"
+        />
+        <div class="card-body text-center px-3 py-4">
+          <h5 class="card-title">{{nombre}}</h5>
+          <p class="card-text text-muted">{{numeroFichas}} fichas | {{numeroJuegos}} juegos</p>
+          {{#nota}}
+            <p class="card-text text-success"><strong>Tu nota:</strong> {{nota}} / 10</p>
+          {{/nota}}
+          {{^nota}}
+            <p class="card-text text-secondary"><strong>Tu nota:</strong> No resuelto</p>
+          {{/nota}}
+
+      
+          <!-- Botón Resolver -->
+          <form action="/cuadernos/resolver" method="post" class="mb-2">
+            <input type="hidden" name="_csrf" value="{{token}}" />
+            <input type="hidden" name="cuadernoId" value="{{id}}" />
+            <button type="submit" class="btn btn-success w-100">Resolver</button>
+          </form>
+
+          {{#isPropietario}}
+      
+          <!-- Botón Ver -->
+          <form action="/cuadernos/ver" method="post" class="mb-2">
+            <input type="hidden" name="_csrf" value="{{token}}" />
+            <input type="hidden" name="cuadernoId" value="{{id}}" />
+            <button type="submit" class="btn btn-primary navbar-custom w-100">Ver Cuaderno</button>
+          </form>
+      
+          <!-- Botón Eliminar -->
+          <form action="/grupos/eliminarCuaderno" method="post">
+            <input type="hidden" name="_csrf" value="{{token}}" />
+            <input type="hidden" name="grupoId" value="{{grupo.id}}" />
+            <input type="hidden" name="cuadernoId" value="{{id}}" />
+            <button type="submit" class="btn btn-danger w-100">Eliminar del Grupo</button>
+          </form>
+
+          {{/isPropietario}}
+
+        </div>
+      </div>
+
+    </div>
+    {{/cuadernosPage}}
+  
+    {{^cuadernosPage}}
+    <div class="col-12">
+      <div class="alert alert-warning text-center">Este grupo no tiene cuadernos asignados.</div>
+    </div>
+    {{/cuadernosPage}}
+  </div>
+  
+
+  <!-- Paginación cuadernos -->
+<nav aria-label="Paginación de Cuadernos" id="navPaginacionCuadernos">
+    {{#pagesC}}
+    <p class="text-center mt-2">Página {{currentPageCuadernos}} de {{totalPagesCuadernos}}</p>
+    {{/pagesC}}
+  
+    <input type="hidden" id="pageSizeCuadernos" value="3" />
+  
+    <ul class="pagination justify-content-center mt-3">
+      {{#hasPrevCuadernos}}
+      <li class="page-item">
+        <button class="btn btn-secondary" data-page="{{prevPageCuadernos}}" onclick="cargarPagina(this, 'cuadernosGrupo')">
+          Anterior
+        </button>
+      </li>
+      {{/hasPrevCuadernos}}
+      {{#hasNextCuadernos}}
+      <li class="page-item">
+        <button class="btn btn-secondary" data-page="{{nextPageCuadernos}}" onclick="cargarPagina(this, 'cuadernosGrupo')">
+          Siguiente
+        </button>
+      </li>
+      {{/hasNextCuadernos}}
+    </ul>
+  </nav>
+  
+
+  <hr />
+
+<!-- Usuarios del grupo -->
+<h3 class="mt-5 mb-3">Usuarios del Grupo</h3>
+<div class="row" id="contenedorUsuarios">
+  {{#usuariosPage}}
+  <div class="col-md-4 text-center" id="contenedorUsuariosTutorial">
+    <div class="card mb-4 shadow-sm p-3 text-center">
+
+      <img src="/users/images/{{id}}" alt="Foto de {{nombre}}"
+        class="rounded-circle mx-auto d-block mb-3"
+        style="width: 120px; height: 120px; object-fit: cover;" />
+      <h5 class="card-title mt-2">{{nombre}}</h5>
+      <p class="card-text text-muted">{{roles}}</p>
+    
+      <!-- Botón Ver Perfil -->
+      <form action="/users/perfil/{{id}}" method="get" class="mb-2">
+        <input type="hidden" name="_csrf" value="{{token}}" />
+        <input type="hidden" name="usuarioId" value="{{id}}" />
+        <button type="submit" class="btn btn-outline-primary btn-sm navbar-custom w-100">Ver Perfil</button>
+      </form>
+    
+      <!-- Botón Eliminar Usuario (solo si es propietario) -->
+      {{#isPropietario}}
+      {{^esPropietarioActual}}
+        <form action="/grupos/eliminarUsuario" method="post" onsubmit="return confirmarEliminarUsuario('{{nombre}}');">
+          <input type="hidden" name="_csrf" value="{{token}}" />
+          <input type="hidden" name="grupoId" value="{{grupo.id}}" />
+          <input type="hidden" name="usuarioId" value="{{id}}" />
+          <button type="submit" class="btn btn-danger btn-sm w-100">Eliminar del Grupo</button>
+        </form>
+      {{/esPropietarioActual}}
+    {{/isPropietario}}
+    
+    
+    </div>
+    
+  </div>
+  {{/usuariosPage}}
+  {{^usuariosPage}}
+  <div class="col-12">
+    <div class="alert alert-warning text-center">Este grupo no tiene usuarios.</div>
+  </div>
+  {{/usuariosPage}}
+</div>
+
+<!-- Paginación de usuarios -->
+<nav aria-label="Paginación de Usuarios" id="navPaginacionUsuarios">
+  {{#pagesU}}
+  <p class="text-center mt-2">Página {{currentPageUsuarios}} de {{totalPagesUsuarios}}</p>
+  {{/pagesU}}
+  <input type="hidden" id="pageSizeUsuarios" value="3" />
+  <ul class="pagination justify-content-center mt-3">
+    {{#hasPrevUsuarios}}
+    <li class="page-item">
+      <button class="btn btn-secondary" data-page="{{prevPageUsuarios}}" onclick="cargarPagina(this, 'usuariosGrupo')">Anterior</button>
+    </li>
+    {{/hasPrevUsuarios}}
+    {{#hasNextUsuarios}}
+    <li class="page-item">
+      <button class="btn btn-secondary" data-page="{{nextPageUsuarios}}" onclick="cargarPagina(this, 'usuariosGrupo')">Siguiente</button>
+    </li>
+    {{/hasNextUsuarios}}
+  </ul>
+</nav>
+
+  
+  <!-- Modal para seleccionar cuadernos -->
+<div class="modal fade" id="cuadernoModal" tabindex="-1" aria-labelledby="cuadernoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cuadernoModalLabel">Seleccionar Cuadernos</h5>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+  
+        <div class="modal-body">
+          <div class="row">
+            {{#cuadernosDisponibles}}
+            <div class="col-md-4 mb-4">
+              <div class="card cuaderno-item h-100 shadow-sm" data-id="{{id}}" data-nombre="{{nombre}}">
+                <img src="/cuadernos/image/{{id}}" class="card-img-top" alt="Imagen de {{nombre}}"
+                  style="height: 150px; object-fit: cover" />
+                <div class="card-body text-center">
+                  <h5 class="card-title">{{nombre}}</h5>
+                </div>
+              </div>
+            </div>
+            {{/cuadernosDisponibles}}
+  
+            {{^cuadernosDisponibles}}
+            <div class="col-12">
+              <div class="alert alert-warning text-center">No hay cuadernos disponibles para agregar.</div>
+            </div>
+            {{/cuadernosDisponibles}}
+          </div>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  </div>
+</div>
+
+<script src="/js/grupo.js"></script>
+<script src="/js/grupoAcciones.js"></script>
+<script src="/js/PaginacionAJAX.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+
+{{> footer}}

@@ -1,0 +1,82 @@
+{{> header}}
+
+  <div class="container flex-grow-1 d-flex justify-content-center align-items-center mt-5">
+    <div class="row justify-content-center w-100">
+      
+      <div class="col-md-6" id="registro-formulario">
+
+        <h2 class="text-center mb-4" id="register">Registrarse</h2>
+
+        <!-- Mostrar error si existe -->
+        {{#error}}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <p>{{error}}</p>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+                    </div>
+        {{/error}}
+        
+      
+        
+        <form action="/users/register" method="post">
+          <input type="hidden" name="_csrf" value="{{token}}"/>
+
+
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label for="nombre" class="form-label" id="name">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" maxlength="15" placeholder="Tu nombre" required>
+          </div>
+          <!-- Edad -->
+          <div class="mb-3">
+            <label for="edad" class="form-label" id="age">Edad</label>
+            <input type="number" class="form-control" id="edad" name="edad" min="1" max="120" placeholder="Tu edad" required>
+          </div>
+          <!-- Email -->
+          <div class="mb-3">
+            <label for="email" class="form-label" id="email">Correo electrónico</label>
+            <input type="email" class="form-control" id="email" name="email" maxlength="30" placeholder="ejemplo@gmail.com" required>
+          </div>
+          <!-- Contraseña -->
+          <div class="mb-3">
+            <label for="password" class="form-label" id="password">Contraseña</label>
+            <input type="password" class="form-control" id="password" name="password" maxlength="15" placeholder="Contraseña" required>
+          </div>
+          <!-- Selección de rol -->
+          <div class="mb-3">
+            <label for="rol" class="form-label" id="role">Rol</label>
+            <select class="form-control" id="rol" name="rol" required>
+              <option value="" id="select-role">Selecciona un rol</option>
+              <option value="ALUMNO" id="student">Alumno</option>
+              <option value="PROFESOR" id="teacher">Profesor</option>
+            </select>
+          </div>
+          
+          <!-- Botón de registro -->
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary navbar-custom" id="register">Registrarse</button>
+
+          </div>
+
+        </form>
+
+        <p class="text-center mt-3" id="registro-login">
+          ¿Ya tienes cuenta?
+          <a href="/login">Inicia sesión</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+      <!-- Overlay de espera -->
+    <div id="overlay-espera" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background-color:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; flex-direction:column; color:white;">
+      <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
+      <p class="mt-3 h5">Registrando... Por favor, espera</p>
+    </div>
+
+
+  <script src="/js/pantallaCarga.js"></script>
+  {{>footer}}

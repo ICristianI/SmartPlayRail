@@ -1,0 +1,101 @@
+{{> header}}
+
+<div class="container mt-4">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="mb-0">Crear Juego de Sopa de Letras</h1>
+    <button class="btn btn-secondary" onclick="window.history.back();">Volver</button>
+  </div>
+
+  <div id="crear-sopa-container">
+
+  <form action="/sopaletras/guardar" method="POST" enctype="multipart/form-data" class="shadow p-4 rounded">
+
+    <input type="hidden" name="_csrf" value="{{token}}" />
+
+    <!-- Nombre del juego -->
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre del Juego</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" maxlength="40" required
+        placeholder="Ejemplo: Animales del Bosque" />
+    </div>
+
+    <!-- Idioma -->
+    <div class="mb-3">
+      <label for="idioma" class="form-label">Idioma</label>
+      <input type="text" class="form-control" id="idioma" name="idioma" maxlength="30" required
+        placeholder="Ejemplo: Español" />
+    </div>
+
+    <!-- Asignatura -->
+    <div class="mb-3">
+      <label for="asignatura" class="form-label">Asignatura</label>
+      <input type="text" class="form-control" id="asignatura" name="asignatura" maxlength="50" required
+        placeholder="Ejemplo: Ciencias Naturales" />
+    </div>
+
+    <!-- Contenido -->
+    <div class="mb-3">
+      <label for="contenido" class="form-label">Contenido</label>
+      <textarea class="form-control" id="contenido" name="contenido" rows="3" maxlength="500" required
+        placeholder="Ejemplo: Animales que habitan en el bosque como el zorro, el búho y el oso."></textarea>
+    </div>
+
+    <!-- Descripción -->
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea class="form-control" id="descripcion" name="descripcion" rows="3" maxlength="150" required
+        placeholder="Ejemplo: Encuentra en la sopa de letras los nombres de animales que viven en el bosque."></textarea>
+    </div>
+
+    <!-- Privacidad del juego -->
+    <div class="form-check form-switch mb-4">
+      <input class="form-check-input" type="checkbox" id="privada" name="privada" value="true">
+      <label class="form-check-label" for="privada">Juego privado (solo tú podrás verlo)</label>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Imagen del Juego. Maximo 5 Mb</label>
+      <div class="d-flex flex-column align-items-center">
+        <div id="imagen-juego-sopa" class="border border-secondary rounded mb-3" style="width: 200px; height: 150px; overflow: hidden">
+          <img id="previewImagen" src="/images/generalImages/CREARSOPA.png" alt="Vista previa"
+            class="w-100 h-100 object-cover" />
+        </div>
+        <label for="imagenJuego" class="btn btn-primary navbar-custom">
+          Seleccionar Imagen
+          <input type="file" class="d-none" id="imagenJuego" name="imagenJuego" accept="image/*" onchange="mostrarVistaPrevia(event)" />
+        </label>
+      </div>
+      <small class="form-text text-muted text-center">
+        Selecciona una imagen representativa para el juego (opcional).
+      </small>
+    </div>
+
+    <!-- Palabras para la sopa de letras -->
+    <div class="mb-3" id="lista-palabras-sopa">
+      <label for="palabraInput" class="form-label">Agregar Palabras (Max 6 Palabras, 8 Letras, No repetidas)</label>
+      <div class="input-group">
+        <input type="text" class="form-control" id="palabraInput" placeholder="Ejemplo: Lobo" maxlength="8" />
+        <button type="button" class="btn btn-outline-primary" onclick="agregarPalabra()">Agregar</button>
+      </div>
+    </div>
+
+    <!-- Lista de palabras agregadas -->
+    <ul id="listaPalabras" class="list-group mb-3"></ul>
+
+    <!-- Input oculto para enviar las palabras en JSON -->
+    <input type="hidden" name="palabras" id="palabras" />
+
+    <!-- Botón para guardar -->
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary navbar-custom" onclick="guardarPalabras(event)">Guardar
+        Juego</button>
+    </div>
+  </form>
+  </div>
+</div>
+
+<script src="/js/size.js"></script>
+<script src="/js/validacionSopaLetras.js"></script>
+<script src="/js/ImagenPreview.js"></script>
+
+{{> footer}}

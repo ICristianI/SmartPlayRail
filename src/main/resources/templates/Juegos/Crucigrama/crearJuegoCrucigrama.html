@@ -1,0 +1,114 @@
+{{> header}}
+
+<div class="container mt-4">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="mb-0">Crear Juego de Crucigrama</h1>
+    <button class="btn btn-secondary" onclick="window.history.back();">Volver</button>
+  </div>
+
+  <div id="crear-crucigrama-container">
+
+  <form action="/crucigrama/guardar" method="POST" enctype="multipart/form-data" class="shadow p-4 rounded" onsubmit="return validarMinimoPistas()">
+    <input type="hidden" name="_csrf" value="{{token}}"/>
+
+    <!-- Nombre del juego -->
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre del Juego</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" maxlength="40" required 
+             placeholder="Ejemplo: Capitales del Mundo" />
+    </div>
+
+    <!-- Idioma -->
+    <div class="mb-3">
+      <label for="idioma" class="form-label">Idioma</label>
+      <input type="text" class="form-control" id="idioma" name="idioma" maxlength="30" required 
+             placeholder="Ejemplo: Español" />
+    </div>
+
+    <!-- Asignatura -->
+    <div class="mb-3">
+      <label for="asignatura" class="form-label">Asignatura</label>
+      <input type="text" class="form-control" id="asignatura" name="asignatura" maxlength="50" required 
+             placeholder="Ejemplo: Geografía" />
+    </div>
+
+    <!-- Contenido -->
+    <div class="mb-3">
+      <label for="contenido" class="form-label">Contenido</label>
+      <textarea class="form-control" id="contenido" name="contenido" rows="3" maxlength="500" required
+                placeholder="Ejemplo: Capitales de países alrededor del mundo."></textarea>
+    </div>
+
+    <!-- Descripción -->
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea class="form-control" id="descripcion" name="descripcion" rows="3" maxlength="150" required
+                placeholder="Ejemplo: Completa el crucigrama con las capitales de diferentes países."></textarea>
+    </div>
+
+        <!-- Privacidad del juego -->
+    <div class="form-check form-switch mb-4">
+      <input class="form-check-input" type="checkbox" id="privada" name="privada" value="true">
+      <label class="form-check-label" for="privada">Juego privado (solo tú podrás verlo)</label>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Imagen del Juego. Max 5 Mb</label>
+      <div class="d-flex flex-column align-items-center">
+        <div id="imagen-juego-crucigrama" class="border border-secondary rounded mb-3" style="width: 200px; height: 150px; overflow: hidden">
+          <img id="previewImagen" src="/images/generalImages/CREARCRUCIGRAMA.png" alt="Vista previa"
+            class="w-100 h-100 object-cover" />
+        </div>
+        <label for="imagenJuego" class="btn btn-primary navbar-custom">
+          Seleccionar Imagen
+          <input type="file" class="d-none" id="imagenJuego" name="imagenJuego" accept="image/*" onchange="mostrarVistaPrevia(event)" />
+        </label>
+      </div>
+      <small class="form-text text-muted text-center">
+        Selecciona una imagen representativa para el juego (opcional).
+      </small>
+    </div>
+
+    <!-- Pistas y Respuestas -->
+    <div class="mb-3" id="lista-pistas-crucigrama">
+      <label for="pistaInput" class="form-label">Agregar Pista y Respuesta (Mín. 3, Máx. 10 pares, 10 letras por respuesta)</label>
+      <div class="input-group mb-2">
+        <input type="text" class="form-control" id="pistaInput" placeholder="Ejemplo: Capital de Francia" maxlength="50" />
+        <input type="text" class="form-control" id="respuestaInput" placeholder="Ejemplo: París" maxlength="10" />
+        <button type="button" class="btn btn-outline-primary" onclick="agregarPista()">Agregar</button>
+      </div>
+    </div>
+
+    <!-- Lista de pistas y respuestas agregadas -->
+    <ul id="listaPistas" class="list-group mb-3"></ul>
+
+    <!-- Input oculto para enviar las pistas y respuestas en JSON -->
+    <input type="hidden" name="pistas" id="pistas" />
+    <input type="hidden" name="respuestas" id="respuestas" />
+
+    <!-- Botón para guardar -->
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary navbar-custom">Guardar Juego</button>
+    </div>
+  </form>
+  </div>
+</div>
+
+<!-- Script para validar al agregar pistas y respuestas -->
+<script>
+  function validarMinimoPistas() {
+    const listaPistas = document.querySelectorAll("#listaPistas li");
+    if (listaPistas.length < 3) {
+      alert("Debes agregar al menos 3 pares de pista y respuesta.");
+      return false;
+    }
+    return true;
+  }
+</script>
+
+<script src="/js/size.js"></script>
+<script src="/js/validacionCrucigrama.js"></script>
+<script src="/js/ImagenPreview.js"></script>
+
+
+{{> footer}}

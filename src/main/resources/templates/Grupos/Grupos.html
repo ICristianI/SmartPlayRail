@@ -1,0 +1,44 @@
+{{> header}}
+
+<div class="container flex-grow-1 d-flex justify-content-center align-items-center mt-4">
+  <div class="w-100">
+    <!-- Volver Button -->
+    <div class="d-flex justify-content-start mb-4">
+      <a href="/" class="btn btn-secondary">Volver</a>
+    </div>
+
+    <!-- Categorías de Grupos -->
+    <div class="card-deck">
+      {{#isProfesor}}
+      <!-- Crear Grupo -->
+      <div class="card mb-3 shadow-sm" id="card-crear-grupo">
+        <img src="/images/generalImages/CREARGRUPO.png" class="card-img-top" alt="Crear Grupo" />
+        <div class="card-body navbar-custom">
+          <h5 class="card-title">Crear Grupo</h5>
+          <a href="/grupos/crear" class="stretched-link"></a>
+        </div>
+      </div>
+      {{/isProfesor}}
+
+      <!-- Unirse a un Grupo -->
+      <div class="card mb-3 shadow-sm" id="card-unirse-grupo">
+        <img src="/images/generalImages/CODIGO.png" class="card-img-top" alt="Unirse a Grupo" />
+        <div class="card-body navbar-custom">
+          <h5 class="card-title">Unirse a Grupo</h5>
+          <a href="/grupos/unirse" class="stretched-link"></a>
+        </div>
+      </div>
+
+      <!-- Ver Grupos -->
+      <div class="card mb-3 shadow-sm" id="card-ver-grupo">
+        <img src="/images/generalImages/VERGRUPO.png" class="card-img-top" alt="Ver Grupos" />
+        <div class="card-body navbar-custom">
+          <h5 class="card-title">Ver Grupos</h5>
+          <a href="/grupos" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{> footer}}

@@ -1,0 +1,102 @@
+{{> header}}
+
+<div class="container mt-5">
+    <div class="row align-items-center">
+        <!-- Columna para los datos -->
+        <div class="col-md-8">
+            <div id="perfil-usuario">
+            <h1>Bienvenido, {{user.nombre}}!</h1>
+            <p><strong>Correo:</strong> {{user.email}}</p>
+            <p><strong>Rol:</strong> {{user.roles}}</p>
+            <p><strong>Edad:</strong> {{user.edad}}</p>
+            </div>
+
+            <!-- Mostrar error si existe -->
+            {{#error}}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <p>{{error}}</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+            </div>
+            {{/error}}
+
+            {{#mensaje}}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <p>{{mensaje}}</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {{/mensaje}}
+
+            <!-- Botón para abrir el formulario de edición -->
+            <button class="btn btn-primary navbar-custom mt-3 " id="editFormButton"  onclick="toggleEditForm()">Editar Perfil</button>
+
+            <!-- Formulario para editar los datos (oculto por defecto) -->
+            <form id="editForm" action="/users/edit" method="post" style="display: none;">
+                <input type="hidden" name="id" value="{{user.id}}">
+                <input type="hidden" name="_csrf" value="{{token}}"/>
+
+                <div class="mt-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" maxlength="15"
+                        value="{{user.nombre}}" required>
+                </div>
+                <div class="mt-3">
+                    <label for="edad" class="form-label">Edad</label>
+                    <input type="number" class="form-control" id="edad" name="edad" maxlength="3" value="{{user.edad}}"
+                        required>
+                </div>
+                <button type="submit" class="btn btn-success mt-3">Guardar Cambios</button>
+            </form>
+
+
+            <!-- Botón para eliminar la cuenta -->
+            <form action="/users/delete" method="post" 
+                onsubmit="return confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.');">
+                <input type="hidden" name="_csrf" value="{{token}}"/>
+
+                <button type="submit" class="btn btn-danger mt-3" id="eliminar-cuenta">Eliminar Cuenta</button>
+            </form>
+
+            <form id="logout-form" action="/logout" method="post" style="display: none;">
+                <input type="hidden" name="_csrf" value="{{token}}">
+              </form>
+              
+              <button  id="logout-form-tutorial" class="btn btn-warning mt-3" onclick="document.getElementById('logout-form').submit();">
+                Cerrar sesión
+              </button>
+              
+        </div>
+
+        <!-- Columna para la imagen -->
+        <div class="col-md-4 text-center" id="profilePhotoForm">
+            <form id="profilePhotoForm" action="/users/upload" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="_csrf" value="{{token}}"/>
+                <img src="/users/image" alt="Foto de perfil" class="img-thumbnail rounded-circle"
+                    style="width: 200px; height: 200px; object-fit: cover; cursor: pointer;"
+                    onclick="document.getElementById('photo').click();" />
+
+                <input type="file" id="photo" name="photo" accept="image/*" style="display: none;">
+                <button type="submit" style="display: none;">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- script simple para desplegar formulario -->
+<script>
+    function toggleEditForm() {
+        var form = document.getElementById('editForm');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.getElementById('photo').addEventListener('change', function () {
+        document.getElementById('profilePhotoForm').submit();
+    });
+</script>
+
+<script src="/js/PerfilCheck.js"></script>
+
+{{> footer}}

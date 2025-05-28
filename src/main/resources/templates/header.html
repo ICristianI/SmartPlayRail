@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartPlay</title>
+    <link rel="icon" type="image/png" href="/images/generalImages/SMARTPLAY.png" />
+
+    <!-- Estilos y Scripts primarios para que no exista flash -->
+
+    <style id="pre-dark-style">
+      html.dark-mode {
+        background-color: #121212 !important;
+        color: white !important;
+      }
+      body.dark-mode {
+        background-color: #121212 !important;
+        color: white !important;
+      }
+    </style>
+    <script>
+      (function () {
+        const root = document.documentElement;
+        let theme = localStorage.getItem("theme");
+
+        if (!theme) {
+          const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          theme = prefersDark ? "dark" : "light";
+          localStorage.setItem("theme", theme);
+        }
+
+        if (theme === "dark") {
+          root.classList.add("dark-mode");
+          const pre = document.getElementById("pre-dark-style");
+          pre.innerHTML += "body { background-color: #121212 !important; color: white !important; }";
+        }
+
+        const gradient = localStorage.getItem("selectedGradient");
+        if (gradient) {
+          const gradients = {
+            bluepurple: ["#5729e1", "#9622d5", "#4b1cba", "#7f1d9f"],
+            redyellow: ["#f0381f", "#f8b500", "#c02e18", "#c69300"],
+            greenTurquoise: ["#20c997", "#007bff", "#199874", "#0056b3"],
+          };
+          const g = gradients[gradient];
+          if (g) {
+            root.style.setProperty("--bg-navbar", `linear-gradient(to right, ${g[0]}, ${g[1]})`);
+            root.style.setProperty("--bg-dropdown-hover", `linear-gradient(to right, ${g[2]}, ${g[3]})`);
+            root.style.setProperty("--bg-dropdown-item-hover", `linear-gradient(to right, ${g[2]}, ${g[3]})`);
+          }
+        }
+      })();
+    </script>
+
+    <!-- CSS  y Boostrap-->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <link href="/css/style.css" rel="stylesheet" />
+
+    <!-- Script interactivo -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.documentElement;
+        const icono = document.getElementById("icono-modo");
+        const toggle = document.getElementById("toggle-mode");
+
+        const tema = localStorage.getItem("theme");
+        const esOscuro = tema === "dark";
+        icono.className = esOscuro ? "fas fa-sun fa-2x" : "fas fa-moon fa-2x";
+
+        const preStyle = document.getElementById("pre-dark-style");
+        if (preStyle) preStyle.remove();
+
+        toggle.addEventListener("click", (e) => {
+          e.preventDefault();
+          const ahoraOscuro = root.classList.toggle("dark-mode");
+          localStorage.setItem("theme", ahoraOscuro ? "dark" : "light");
+          icono.className = ahoraOscuro ? "fas fa-sun fa-2x" : "fas fa-moon fa-2x";
+        });
+      });
+    </script>
+  </head>
+
+  <body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark navbar-custom">
+      <a href="/" class="d-flex align-items-center">
+        <img class="navbar-toggler-icon" src="/images/generalImages/SMARTPLAY.png" alt="SmartPlay Icon" />
+        <a class="navbar-brand" href="/" style="margin-left: 1vmin; border-right: 2px solid white; padding-right: 10px;">SmartPlay</a>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+          {{^isLogged}}
+          <li class="nav-item">
+            <a class="nav-link btn" href="/regin" style="margin-right: 15px;" id="start">Inicio</a>
+          </li>
+          {{/isLogged}}
+
+          {{#isLogged}}
+
+          <li class="nav-item">
+            <a class="nav-link btn" href="/grupo" style="margin-right: 15px;" id="grupos">Grupos</a>
+          </li>
+          {{#isProfesor}}
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle btn" href="#" id="creacionDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false" style="margin-right: 15px;">
+              Creación
+            </a>
+            <div class="dropdown-menu navbar-custom" aria-labelledby="creacionDropdown">
+              <a class="dropdown-item navbar-hover" href="/creacion">Panel de Creación</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item navbar-hover" href="/Cuadernos">Cuadernos</a>
+              <a class="dropdown-item navbar-hover" href="/fichas">Fichas</a>
+              <a class="dropdown-item navbar-hover" href="/juegos">Juegos</a>
+            </div>
+          </li>
+          
+          {{/isProfesor}}
+          {{/isLogged}}
+
+          <li class="nav-item">
+            <a class="nav-link btn" href="/f/investigar" id="invf">Investigar Fichas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link btn" href="/juegos/investigar" id="invj">Investigar Juegos</a>
+          </li>
+        </ul>
+
+        <ul class="navbar-nav ml-auto" style="margin-right: 50px;">
+          <li class="nav-item" style="border-right: 2px solid white;">
+            <a class="nav-link" href="#" id="toggle-mode">
+              <i id="icono-modo" class="fas fa-moon fa-2x"></i>
+            </a>
+          </li>
+
+          <li class="nav-item" style="border-right: 2px solid white; cursor: pointer;" data-toggle="tooltip" title="Ver tutorial">
+            <a class="nav-link tutorial-icon" onclick="iniciarTutorial()">
+              <i class="fas fa-question-circle fa-2x"></i>
+            </a>
+          </li>
+          
+          
+        
+          {{#isLogged}}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <img src="/users/image" alt="Perfil"
+                style="width: 30px; height: 30px; border-radius: 50%; margin-right: 8px;">
+              {{currentUserName}}
+            </a>
+            <div class="dropdown-menu navbar-custom" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item navbar-hover" href="/config" id="config-title">Configuración</a>
+              <a class="dropdown-item navbar-hover" href="/users/perfil" id="perfil">Mi perfil</a>
+            </div>
+          </li>
+          {{/isLogged}}
+
+          {{^isLogged}}
+          <li class="nav-item iniciar-sesion">
+            <a class="nav-link" href="/login" id="login">
+              <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signup" id="signup">
+              <i class="fas fa-user-plus"></i> Registrarse
+            </a>
+          </li>
+          {{/isLogged}}
+        </ul>
+      </div>
+    </nav>
+
+    
+

@@ -1,0 +1,48 @@
+{{> header}}
+
+<div class="container flex-grow-1 d-flex justify-content-center align-items-center mt-5">
+  <div class="row justify-content-center w-100">
+    <div class="col-md-6" id="login-formulario">
+      
+
+      <h2 class="text-center mb-4" id="login">Iniciar Sesión</h2>
+
+      <!-- Mostrar error si existe -->
+      {{#error}}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <p>{{error}}</p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {{/error}}
+
+      <form action="/login" method="post" autocomplete="on">
+        <input type="hidden" name="_csrf" value="{{token}}"/>
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="email" class="form-label" id="email">Correo electrónico</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="ejemplo@gmail.com" required autocomplete="email">
+        </div>
+
+        <!-- Contraseña -->
+        <div class="mb-3">
+          <label for="password" class="form-label" id="password">Contraseña</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required autocomplete="current-password">
+        </div>
+
+        <!-- Botón de inicio de sesión -->
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary navbar-custom" id="login">Iniciar Sesión</button>
+        </div>
+      </form>
+
+      <p class="text-center mt-3" id="login-registro">
+        ¿No tienes cuenta? <a href="/signup">Regístrate aquí</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+{{> footer}}

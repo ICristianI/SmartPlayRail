@@ -1,0 +1,148 @@
+{{> header}}
+
+<div class="container mt-4">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="mb-0">Crear Cuaderno</h1>
+    <a href="/Cuadernos" class="btn btn-secondary">Volver</a>
+  </div>
+
+  <form action="/cuadernos/guardar" method="POST" enctype="multipart/form-data" class="shadow p-4 rounded" id="crear-cuaderno">
+    <input type="hidden" name="_csrf" value="{{token}}"/>
+  
+    <!-- Nombre del cuaderno -->
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre del Cuaderno</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe el nombre del cuaderno"
+        maxlength="30" required />
+    </div>
+  
+    <!-- Imagen del cuaderno -->
+    <div class="mb-3">
+      <label class="form-label">Imagen del Cuaderno. Max 5 Mb</label>
+      <div class="d-flex flex-column align-items-center">
+        <div class="border border-secondary rounded mb-3" style="width: 200px; height: 150px; overflow: hidden" id="imagen-cuaderno">
+          <img id="previewImagen" src="/images/generalImages/CuadernoDefault.jpg" alt="Vista previa"
+          class="w-100 h-100 object-cover" />
+        </div>
+        <label for="imagenCuaderno" class="btn btn-primary navbar-custom">
+          Seleccionar Imagen
+          <input type="file" class="d-none" id="imagenCuaderno" name="imagenCuaderno" accept="image/*" onchange="mostrarVistaPrevia(event)" />
+        </label>
+      </div>
+      <small class="form-text text-muted text-center">Selecciona una imagen representativa para este cuaderno.</small>
+    </div>
+
+    <!-- Botón para abrir el modal de fichas -->
+    <div class="mb-3">
+      <label class="form-label">Seleccionar Fichas</label>
+      <button type="button" class="btn btn-primary navbar-custom" data-toggle="modal" data-target="#fichaModal" id="btn-modal-fichas">
+        Elegir Fichas
+      </button>
+    </div>
+
+    <!-- Contenedor para fichas seleccionadas -->
+    <div class="mb-3">
+      <label class="form-label">Fichas Seleccionadas</label>
+      <ul id="listaFichas" class="list-group"></ul>
+    </div>
+
+    <!-- Input oculto para enviar IDs de fichas seleccionadas -->
+    <input type="hidden" name="fichasSeleccionadas" id="fichasSeleccionadas" />
+
+    <!-- Modal para seleccionar fichas -->
+    <div class="modal fade" id="fichaModal" tabindex="-1" aria-labelledby="fichaModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="fichaModalLabel">Seleccionar Fichas</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              {{#fichas}}
+              <div class="col-md-4 mb-4">
+                <div class="card ficha-item h-100 shadow-sm" data-id="{{id}}" data-nombre="{{nombre}}">
+                  <img src="/f/ficha/image/{{id}}" class="card-img-top" alt="Imagen de {{nombre}}"
+                    style="height: 150px; object-fit: cover" />
+                  <div class="card-body text-center">
+                    <p class="card-text">{{nombre}}</p>
+                  </div>
+                </div>
+              </div>
+              {{/fichas}}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón para abrir el modal de juegos -->
+    <div class="mb-3">
+      <label class="form-label">Seleccionar Juegos</label>
+      <button type="button" class="btn btn-primary navbar-custom" data-toggle="modal" data-target="#juegoModal" id="btn-modal-juegos">
+        Elegir Juegos
+      </button>
+    </div>
+
+    <!-- Contenedor para juegos seleccionados -->
+    <div class="mb-3">
+      <label class="form-label">Juegos Seleccionados</label>
+      <ul id="listaJuegos" class="list-group"></ul>
+    </div>
+
+    <!-- Input oculto para enviar IDs de juegos seleccionados -->
+    <input type="hidden" name="juegosSeleccionados" id="juegosSeleccionados" />
+
+    <!-- Modal para seleccionar juegos -->
+    <div class="modal fade" id="juegoModal" tabindex="-1" aria-labelledby="juegoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="juegoModalLabel">Seleccionar Juegos</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              {{#juegos}}
+              <div class="col-md-4 mb-4">
+                <div class="card juego-item h-100 shadow-sm" data-id="{{id}}" data-nombre="{{nombre}}">
+                  <img src="/juegos/image/{{id}}" class="card-img-top" alt="Imagen de {{nombre}}"
+                  style="height: 150px; object-fit: cover" />
+                  <div class="card-body text-center">
+                    <h5 class="card-title">{{nombre}}</h5>
+                  </div>
+                </div>
+              </div>
+              {{/juegos}}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón para guardar -->
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary navbar-custom" id="btn-crear-cuaderno">
+        Guardar Cuaderno
+      </button>
+    </div>
+  </form>
+</div>
+
+<script src="/js/cuaderno.js"></script>
+<script src="/js/ImagenPreview.js"></script>
+
+
+{{> footer}}

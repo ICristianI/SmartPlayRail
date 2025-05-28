@@ -1,0 +1,74 @@
+{{> header}}
+
+<!-- Main Content -->
+<div class="container flex-grow-1 d-flex justify-content-center align-items-center">
+  <!-- Categories -->
+  <div class="card-deck w-100">
+
+    <!-- Mostrar "Inicio" solo si no está logueado -->
+    {{^isLogged}}
+    <div class="card navbar-custom text-center" id="card-start">
+      <img src="/images/generalImages/INICIOTITULO.png" class="cardVertical card-img-top limited-img" alt="Inicio" />
+      <div class="card-body">
+        <!-- 🆗 ID único -->
+        <h5 class="card-title" >Inicio</h5>
+        <a href="/regin" class="stretched-link" title="Ir a Inicio"></a>
+      </div>
+    </div>
+    {{/isLogged}}
+
+    {{#isLogged}}
+
+    <!-- Carta de Creación -->
+    {{#isProfesor}}
+    <div class="card navbar-custom text-center" id="card-creacion">
+      <img src="/images/generalImages/CREACIONTITULO.png" class="cardVertical limited-img" alt="Creación" />
+      <div class="card-body">
+        <h5 class="card-title" >Creación</h5>
+        <a href="/creacion" class="stretched-link" title="Ir a Creación"></a>
+      </div>
+    </div>
+    {{/isProfesor}}
+
+    <!-- Carta de Grupo -->
+    <div class="card navbar-custom text-center" id="card-grupos">
+      <img src="/images/generalImages/GRUPOTITULO.png" class="cardVertical limited-img" alt="Grupo" />
+      <div class="card-body">
+        <h5 class="card-title" >Grupo</h5>
+        <a href="/grupo" class="stretched-link" title="Ir a Grupo"></a>
+      </div>
+    </div>
+    {{/isLogged}}
+
+    <!-- Carta de Investigar Fichas -->
+    <div class="card navbar-custom p-0 text-center" id="card-invf">
+      <form action="/f/investigar" method="get" class="h-100 w-100">
+        <input type="hidden" name="_csrf" value="{{token}}" />
+        <button type="submit" class="btn p-0 h-100 w-100 text-center" style="border: none; background: none; color: white;">
+          <img src="/images/generalImages/FICHASTITULO.png" class="cardVertical limited-img card-img-top" alt="Investigar Fichas" />
+          <div class="card-body">
+            <h5 class="card-title" >Investigar Fichas</h5>
+          </div>
+        </button>
+      </form>
+    </div>
+
+    <!-- Carta de Investigar Juegos -->
+    <div class="card navbar-custom p-0 text-center" id="card-invj">
+      <form action="/juegos/investigar" method="get" class="h-100 w-100">
+        <input type="hidden" name="_csrf" value="{{token}}" />
+        <button type="submit" class="btn p-0 h-100 w-100 text-center" style="border: none; background: none; color: white;">
+          <img src="/images/generalImages/JUEGOSTITULO.png" class="cardVertical limited-img card-img-top" alt="Investigar Juegos" />
+          <div class="card-body">
+            <h5 class="card-title" >Investigar Juegos</h5>
+          </div>
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+
+
+{{> footer}}

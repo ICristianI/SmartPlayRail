@@ -1,0 +1,85 @@
+{{> header}}
+
+<div class="container mt-5 text-center">
+  <!-- Título y Like -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0 text-start nombre-juego">{{ juego.nombre }}</h1>
+
+    <div class="like-section">
+      {{#User}}
+      <div id="likeButtonTutorial">
+      <form id="likeForm" onsubmit="return false;">
+        <input type="hidden" name="_csrf" value="{{token}}" />
+        <input type="hidden" id="juegoId" value="{{juego.id}}">
+        <button id="likeButton" class="btn btn-link" onclick="darMeGusta()" style="text-decoration: none;">
+          <span id="corazon" style="font-size: 2rem;"
+            data-liked="{{#tieneLike}}true{{/tieneLike}}{{^tieneLike}}false{{/tieneLike}}">
+            {{#tieneLike}}❤️{{/tieneLike}}{{^tieneLike}}🤍{{/tieneLike}}
+          </span>
+          <span id="contadorLikes" class="ms-2 text-danger" style="font-size: 1.5rem;">{{juego.meGusta}}</span>
+        </button>
+      </form>
+    </div>
+      {{/User}}
+    </div>
+  </div>
+
+  <div class="text-start w-100">
+    <h5 class="mb-3 mt-3 word-wrap-break">Descripción: {{ juego.descripcion }}</h5>
+</div>
+  
+  <!-- Contenedor del Crucigrama -->
+  <div id="crucigramaTutorial">
+    <div id="crucigramaContainerWrapper" class="d-flex justify-content-center flex-wrap mt-4">
+      <div id="crucigrama" class="mb-4"></div>
+    </div>
+  </div>
+  <!-- Pistas -->
+  <h4 class="mt-5" id="pistasTutorial">Pistas:</h4>
+  <ul id="listaPistas" class="list-group list-group-flush text-start mx-auto" style="max-width: 1200px;">
+    {{#pistasRespuestas}}
+    <li class="list-group-item" >
+      <strong >{{@index + 1}}.</strong> {{pista}}
+    </li>
+    {{/pistasRespuestas}}
+  </ul>
+  
+  <!-- Mueve el botón fuera del bucle -->
+  <div class="text-center mt-3">
+    <button class="btn btn-primary" onclick="verificarRespuestas()" id="btnVerificar">Verificar Respuestas</button>
+  </div>
+  
+
+  <!-- Resultado -->
+  <div id="mensajeCrucigrama" class="mt-4"></div>
+
+  <!-- Botón para reiniciar -->
+  <button class="btn btn-primary mt-4" onclick="reiniciarCrucigrama()" id="btnReiniciarJuego">Reiniciar Juego</button>
+
+  <!-- Botón para descargar PDF -->
+  <button class="btn btn-success mt-4" onclick="descargarCrucigramaPDF()" id="btnDescargarPDF">Descargar en PDF</button>
+
+  <!-- Volver -->
+  <button class="btn btn-secondary mt-4" onclick="window.history.back();" id="btnVolverJuego">Volver</button>
+</div>
+
+<script>
+    const juego = {
+        pistas: "{{{juego.pistas}}}",
+        respuestas: "{{{juego.respuestas}}}",
+        nombre: "{{juego.nombre}}",
+        descripcion: "{{juego.descripcion}}"
+    };
+</script>
+
+
+<!-- Librerías necesarias para exportar -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Script personalizado del crucigrama -->
+<script src="/js/crucigrama.js"></script>
+<script src="/js/like.js"></script>
+
+
+{{> footer}}

@@ -1,0 +1,239 @@
+{{> header}}
+
+<div class="container mt-5">
+    <div class="row align-items-center">
+        <div class="col-md-8" id="Contenido">
+            <!-- Detalles del juego -->
+            
+            <div class="d-flex justify-content-between align-items-center mt-4 px-2">
+                <small class="text-muted"><strong>Creada el:</strong> {{fechaFormateada}}</small>
+                <small class="text-danger" style="font-size: 1.1rem;">❤️ {{juego.meGusta}}</small>
+            </div>
+            <h1>{{juego.nombre}}</h1>
+            <p class="text-break"><strong>Idioma:</strong> {{juego.idioma}}</p>
+            <p class="text-break">
+                <strong>Asignatura:</strong> {{juego.asignatura}}
+            </p>
+            <p class="text-break"><strong>Descripción:</strong></p>
+            <div class=" descripcion-cuadro p-3 border rounded bg-light" style="word-wrap: break-word; overflow-wrap: break-word">
+                {{juego.descripcion}}
+            </div>
+            <p class="mt-3"><strong>Contenido:</strong></p>
+            <div class=" descripcion-cuadro p-3 border rounded bg-light mb-3" style="word-wrap: break-word; overflow-wrap: break-word">
+                {{juego.contenido}}
+            </div>
+            <p class="text-break">
+                <strong>Palabra Secreta:</strong> {{juego.palabra}}
+            </p>
+            <p class="text-break">
+                <strong>Máximo de Intentos:</strong> {{juego.maxIntentos}}
+            </p>
+            <p class="text-break" id="Privacidad">
+                <strong>Privacidad:</strong>
+                {{#juego.privada}}<span class="badge bg-danger">Privado</span>{{/juego.privada}}
+                {{^juego.privada}}<span class="badge bg-success">Público</span>{{/juego.privada}}
+            </p>
+              
+
+            <!-- Mensajes -->
+            {{#error}}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <p>{{error}}</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+            </div>
+            {{/error}} {{#mensaje}}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <p>{{mensaje}}</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {{/mensaje}}
+
+            <!-- Botón para abrir el formulario de edición -->
+            <button class="btn btn-primary navbar-custom mt-3" onclick="toggleEditForm()" id="editFormTutorial">
+                Editar Juego
+            </button>
+
+            <!-- Formulario para editar los datos del juego -->
+            <form id="editForm" action="/ahorcado/editar" method="post" style="display: none">
+                <input type="hidden" name="_csrf" value="{{token}}"/>
+
+                <div class="mt-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" maxlength="40"
+                        value="{{juego.nombre}}" required />
+                </div>
+                <div class="mt-3">
+                    <label for="idioma" class="form-label">Idioma</label>
+                    <input type="text" class="form-control" id="idioma" name="idioma" maxlength="30"
+                        value="{{juego.idioma}}" required />
+                </div>
+                <div class="mt-3">
+                    <label for="asignatura" class="form-label">Asignatura</label>
+                    <input type="text" class="form-control" id="asignatura" name="asignatura" maxlength="50"
+                        value="{{juego.asignatura}}" required />
+                </div>
+                <div class="mt-3">
+                    <label for="contenido" class="form-label">Contenido</label>
+                    <textarea class="form-control" id="contenido" name="contenido" maxlength="500" required>{{juego.contenido}}</textarea>
+                </div>
+                <div class="mt-3">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <textarea class="form-control" id="descripcion" name="descripcion" maxlength="150" required>{{juego.descripcion}}</textarea>
+                </div>
+                
+                <div class="form-check form-switch mt-3">
+                    <input class="form-check-input" type="checkbox" id="privada" name="privada" value="true" {{#juego.privada}}checked{{/juego.privada}}>
+                    <label class="form-check-label" for="privada">Juego privado</label>
+                </div>
+  
+                <div class="mt-3">
+                    <label for="palabra" class="form-label">Palabra Secreta (Max 15 Letras)</label>
+                    <input type="text" class="form-control" id="palabra" name="palabra"  pattern="[A-Za-z]+" maxlength="15"
+                        value="{{juego.palabra}}" required />
+                </div>
+                <div class="mt-3">
+                    <label for="maxIntentos" class="form-label">Máximo de Intentos</label>
+                    <div class="input-group">
+                        <button type="button" class="btn btn-outline-secondary" onclick="cambiarIntentos(-1)">
+                            -
+                        </button>
+                        <input type="number" class="form-control text-center" id="maxIntentos" name="maxIntentos"
+                            value="{{juego.maxIntentos}}" min="1" max="15" readonly />
+                        <button type="button" class="btn btn-outline-secondary" onclick="cambiarIntentos(1)">
+                            +
+                        </button>
+                    </div>
+                </div>
+
+                <input type="hidden" name="juegoId" value="{{juego.id}}" />
+                <button type="submit" class="btn btn-success mt-3">
+                    Guardar Cambios
+                </button>
+            </form>
+
+            <!-- Botón para eliminar el juego -->
+            <form action="/ahorcado/eliminar" method="post"
+                onsubmit="return confirm('¿Estás seguro de que quieres eliminar este juego? Esta acción no se puede deshacer.');">
+                <input type="hidden" name="_csrf" value="{{token}}"/>
+
+                <input type="hidden" name="juegoId" value="{{juego.id}}" />
+                <button type="submit" class="btn btn-danger mt-3" id="btnEliminarJuego">
+                    Eliminar Juego
+                </button>
+            </form>
+            <form action="/ahorcado/jugar" method="get">
+                <input type="hidden" name="_csrf" value="{{token}}"/>
+
+                <input type="hidden" name="juegoId" value="{{juego.id}}" />
+                <button type="submit" class="btn btn-success mt-3" id="btnJugarJuego">Jugar</button>
+            </form>
+
+            <form action="/ahorcado/listar" method="get">
+                <input type="hidden" name="_csrf" value="{{token}}"/>
+
+                <button type="submit" class="btn btn-secondary mt-3" id="btnVolverListado">Volver</button>
+            </form>
+        </div>
+    </div>
+
+    <hr />
+
+    <!-- Mostrar los cuadernos en los que está el juego -->
+    <h3 class="mt-5 mb-4">Este juego pertenece a los siguientes cuadernos:</h3>
+
+    <div class="row" id="contenedorCuadernos">
+        {{#cuadernos}}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm position-relative">
+                <img
+                  src="/cuadernos/image/{{id}}"
+                  class="card-img-top"
+                  alt="Imagen del cuaderno"
+                  style="height: 150px; object-fit: cover"
+                  onerror="this.onerror=null; this.src='/images/generalImages/CuadernoDefault.jpg';"
+                />
+                <div class="card-body text-center px-3 py-4">
+                  <h5 class="card-title">{{nombre}}</h5>
+                  <p class="card-text text-muted"><strong>Propietario:</strong> {{usuario.nombre}}</p>
+                  <p class="card-text text-muted">{{numeroFichas}} fichas | {{numeroJuegos}} juegos</p>
+              
+                  <form action="/cuadernos/ver" method="post">
+                    <input type="hidden" name="_csrf" value="{{token}}"/>
+                    <input type="hidden" name="cuadernoId" value="{{id}}" />
+                    <button type="submit" class="btn btn-primary navbar-custom w-100">
+                      Ver Cuaderno
+                    </button>
+                  </form>
+                </div>
+              </div>              
+        </div>
+        {{/cuadernos}}
+    </div>
+
+    <!-- PAGINACIÓN DE CUADERNOS -->
+    <nav aria-label="Paginación Cuadernos" id="navPaginacionCuadernos2">
+        <input type="hidden" id="pageSizeCuadernos" value="3" />
+    <input type="hidden" name="juegoId" id="juegoId" value="{{juego.id}}" />
+    <input type="hidden" id="tipoJuegoActual" value="ahorcado"/>
+
+
+  
+
+    <ul class="pagination justify-content-center mt-3">
+        {{#hasPrevCuadernos}}
+        <li class="page-item">
+            <button class="btn btn-secondary" data-page="{{prevPageCuadernos}}" onclick="cargarPagina(this, 'cuadernos2')">
+                Anterior
+            </button>
+        </li>
+        {{/hasPrevCuadernos}} 
+        {{#hasNextCuadernos}}
+        <li class="page-item">
+            <button class="btn btn-secondary" data-page="{{nextPageCuadernos}}" onclick="cargarPagina(this, 'cuadernos2')">
+                Siguiente
+            </button>
+        </li>
+        {{/hasNextCuadernos}}
+    </ul>
+    {{#pages}}
+    <p class="text-center mt-2">Página {{currentPageCuadernos}} de {{totalPagesCuadernos}}</p>
+    {{/pages}}
+</nav>
+
+    <!-- Si no tiene cuadernos, mostrar un mensaje -->
+    {{^cuadernos}}
+    <div class="alert alert-warning text-center mt-4">
+        <p>Este juego no pertenece a ningún cuaderno.</p>
+        <a href="/cuadernos/crear" class="btn btn-primary navbar-custom">Crear un Cuaderno</a>
+    </div>
+    {{/cuadernos}}
+</div>
+
+<!-- Script para manejar el formulario de edición y los intentos -->
+<script>
+    function toggleEditForm() {
+        var form = document.getElementById("editForm");
+        form.style.display = form.style.display === "none" ? "block" : "none";
+    }
+
+    function cambiarIntentos(cambio) {
+        let input = document.getElementById("maxIntentos");
+        let valorActual = parseInt(input.value);
+        let nuevoValor = valorActual + cambio;
+
+        if (nuevoValor >= 1 && nuevoValor <= 15) {
+            input.value = nuevoValor;
+        }
+    }
+</script>
+  
+
+<script src="/js/PaginacionAJAX.js"></script>
+<script src="/js/validacionAhorcado.js"></script>
+
+
+{{> footer}}

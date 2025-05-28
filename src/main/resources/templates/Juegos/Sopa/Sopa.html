@@ -1,0 +1,34 @@
+{{> header}}
+
+<!-- Main Content -->
+<div class="container flex-grow-1 d-flex justify-content-center align-items-center mt-4">
+  <div class="w-100">
+    <!-- Volver Button -->
+    <div class="d-flex justify-content-start mb-4">
+      <a href="/juegos" class="btn btn-secondary">Volver</a>
+    </div>
+
+    <!-- Categorías -->
+    <div class="card-deck justify-content-center">
+      <!-- Card 1: Crear Juego Sopa de Letras -->
+      <div class="card mb-3 shadow-sm" id="card-crear-sopa">
+        <img src="/images/generalImages/CREARSOPA.png" class="card-img-top" alt="Crear Juego Sopa de Letras" />
+        <div class="card-body navbar-custom">
+          <h5 class="card-title">Crear Juego Sopa de Letras</h5>
+          <a href="/sopaletras/crear" class="stretched-link"></a>
+        </div>
+      </div>
+
+      <!-- Card 2: Ver Juegos Sopa de Letras -->
+      <div class="card mb-3 shadow-sm" id="card-ver-sopa">
+        <img src="/images/generalImages/CREARSOPA.png" class="card-img-top" alt="Ver Juegos Sopa de Letras" />
+        <div class="card-body navbar-custom">
+          <h5 class="card-title">Ver Juegos Sopa de Letras</h5>
+          <a href="/sopaletras/listar" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{> footer}}

@@ -1,0 +1,44 @@
+{{> header}}
+
+<div class="container mt-5">
+  <!-- Botón para volver a la página de grupos -->
+  <div class="d-flex justify-content-start mb-3" >
+    <a href="/grupo" class="btn btn-secondary" id="btn-volver-unirse">Volver</a>
+  </div>
+
+  <!-- Título de la sección -->
+  <div class="row justify-content-center" id="titulo-unirse-grupo">
+    <div class="col-md-6">
+      <h2 class="mb-4 text-center">Unirse a un Grupo</h2>
+
+
+      <!-- Mensajes de error y éxito -->
+      {{#error}}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {{/error}}
+
+      {{#mensaje}}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{mensaje}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {{/mensaje}}
+
+      <!-- Formulario para unirse a un grupo -->
+      <form action="/grupos/unirse" method="post">
+        <div class="mb-3" id="campo-codigo">
+          <label for="codigoAcceso" class="form-label">Código de Acceso</label>
+          <input type="hidden" name="_csrf" value="{{token}}" />
+          <input type="text" class="form-control" id="codigoAcceso" autocomplete="off" name="codigoAcceso" required />
+        </div>
+        <button type="submit" class="btn btn-primary navbar-custom" id="btn-unirse-grupo">Unirse</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+{{> footer}}

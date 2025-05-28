@@ -1,0 +1,108 @@
+{{> header}}
+
+<div class="container mt-5 text-center">
+
+
+  <!-- Título del juego y botón de me gusta -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0 text-start nombre-juego">{{ juego.nombre }}</h1>
+
+    <div class="like-section">
+      {{#User}}
+      <div id="likeButton">
+        <form id="likeForm" onsubmit="return false;">
+          <input type="hidden" name="_csrf" value="{{token}}" />
+          <input type="hidden" id="juegoId" value="{{juego.id}}">
+          <button id="likeButton" class="btn btn-link" onclick="darMeGusta()" style="text-decoration: none;">
+            <span id="corazon" style="font-size: 2rem;"
+              data-liked="{{#tieneLike}}true{{/tieneLike}}{{^tieneLike}}false{{/tieneLike}}">
+              {{#tieneLike}}❤️{{/tieneLike}}{{^tieneLike}}🤍{{/tieneLike}}
+            </span>
+            <span id="contadorLikes" class="ms-2 text-danger" style="font-size: 1.5rem;">{{juego.meGusta}}</span>
+          </button>
+        </form>
+      </div>
+      {{/User}}
+    </div>
+
+  </div>
+  <div class="text-start w-100">
+    <h5 class="mb-3 mt-3 word-wrap-break ">Descripción: {{ juego.descripcion }}</h5>
+  </div>
+
+
+
+
+  <!-- Espacios para la Sopa de Letras -->
+  <div id="sopaLetrasTutorial">
+    <div id="sopaContainerWrapper" class="d-flex justify-content-center flex-wrap mt-3">
+      <div id="sopaDeLetras" class="mb-4"></div>
+    </div>
+  </div>
+  <!-- Palabras a encontrar -->
+  <h4 class="mt-5">Palabras a encontrar:</h4>
+  <ul id="listaPalabras" class="list-group list-group-horizontal justify-content-center"></ul>
+
+  <!-- Mensaje de resultado -->
+  <div id="mensaje" class="mt-4"></div>
+
+  <!-- Selección de dificultad -->
+  <div id="dificultadTutorial">
+    <div class="mt-4" id="dificultadContainer">
+      <label for="dificultad" class="fw-bold">
+        Selecciona la dificultad:
+      </label>
+      <select id="dificultad" class="form-select w-auto d-inline-block mx-2"
+        onchange="seleccionarDificultad(this.value)">
+        <option value="normal" selected>Normal (10x10)</option>
+        <option value="dificil">Difícil (15x15)</option>
+      </select>
+
+      <!-- Icono con tooltip -->
+      <span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="right"
+        title="En dificultad normal (10x10), puede ser difícil colocar entre 5 y 6 palabras sin que compartan letras. 
+      Si notas que falta alguna palabra, intenta reiniciar el juego o cambia a dificultad difícil (15x15) para una mejor distribución.">
+        ❓
+      </span>
+    </div>
+  </div>
+
+
+
+  <!-- Botón para reiniciar -->
+  <button class="btn btn-primary mt-4" onclick="reiniciarJuego()" id="btnReiniciarJuego">Reiniciar Juego</button>
+
+  <!-- Botón para descargar PDF -->
+  <button class="btn btn-success mt-4" onclick="descargarPDF()" id="btnDescargarPDF">Descargar en PDF</button>
+
+  <!-- Volver -->
+  <button class="btn btn-secondary mt-4" onclick="window.history.back();" id="btnVolverJuego">
+    Volver
+  </button>
+</div>
+
+<!-- Script para cargar el juego y manejar la lógica de la sopa de letras, con sus datos y un tooltip para la información emergente del icono -->
+<script>
+  const juego = {
+    palabras: JSON.parse(`{{{ juego.palabras }}}`),
+    nombre: "{{ juego.nombre }}",
+    descripcion: "{{ juego.descripcion }}"
+  };
+  console.log("Juego cargado:", juego);
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+      new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="/js/sopaLetras.js"></script>
+<script src="/js/like.js"></script>
+
+
+{{> footer}}

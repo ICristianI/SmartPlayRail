@@ -1,0 +1,90 @@
+{{> header}}
+
+<div class="container mt-4">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="mb-0">Crear Grupo</h1>
+    <a href="/grupo" class="btn btn-secondary">Volver</a>
+  </div>
+
+  <form action="/grupos/guardar" method="POST" class="shadow p-4 rounded" id="crear-grupo">
+    <input type="hidden" name="_csrf" value="{{token}}" />
+
+    <!-- Nombre del grupo -->
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre del Grupo</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe el nombre del grupo"
+        maxlength="100" required />
+    </div>
+
+    <!-- Descripción -->
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea class="form-control" id="descripcion" name="descripcion" rows="3"
+        placeholder="Añade una breve descripción (opcional)" maxlength="255"></textarea>
+    </div>
+
+    <!-- Botón para abrir el modal de cuadernos -->
+    <div class="mb-3" id="btn-modal-cuadernos">
+      <label class="form-label">Seleccionar Cuadernos</label>
+      <button type="button" class="btn btn-primary navbar-custom" data-toggle="modal" data-target="#cuadernoModal">
+        Elegir Cuadernos
+      </button>
+    </div>
+
+    <!-- Lista de cuadernos seleccionados -->
+    <div class="mb-3">
+      <label class="form-label">Cuadernos Seleccionados</label>
+      <ul id="listaCuadernos" class="list-group"></ul>
+    </div>
+
+    <!-- Input oculto para enviar IDs de cuadernos -->
+    <input type="hidden" name="cuadernosSeleccionados" id="cuadernosSeleccionados" />
+
+    <!-- Modal para seleccionar cuadernos -->
+    <div class="modal fade" id="cuadernoModal" tabindex="-1" aria-labelledby="cuadernoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cuadernoModalLabel">Seleccionar Cuadernos</h5>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              {{#cuaderno}}
+              <div class="col-md-4 mb-4">
+                <div class="card cuaderno-item h-100 shadow-sm" data-id="{{id}}" data-nombre="{{nombre}}">
+                  <img src="/cuadernos/image/{{id}}" class="card-img-top" alt="Imagen de {{nombre}}"
+                    style="height: 150px; object-fit: cover" />
+                  <div class="card-body text-center">
+                    <h5 class="card-title">{{nombre}}</h5>
+                  </div>
+                </div>
+              </div>
+              {{/cuaderno}}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón para guardar -->
+    <div class="text-center" id="btn-crear-grupo">
+      <button type="submit" class="btn btn-primary navbar-custom">
+        Crear Grupo
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Enlace al JS separado -->
+<script src="/js/grupo.js"></script>
+
+
+{{> footer}}

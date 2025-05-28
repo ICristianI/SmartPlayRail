@@ -1,0 +1,83 @@
+{{> header}}
+
+<div class="container mt-5 text-center" id="ahorcadoTutorial">
+
+    <!-- Título y Like -->
+    <div class="d-flex justify-content-between align-items-center mb-3" >
+      <h1 class="mb-0 text-start nombre-juego">{{ juego.nombre }}</h1>
+  
+      <!-- Contenedor separado para el like -->
+      <div class="like-section">
+        {{#User}}
+        <div id="likeButtonTutorial">
+        <form id="likeForm" onsubmit="return false;">
+          <input type="hidden" name="_csrf" value="{{token}}" />
+          <input type="hidden" id="juegoId" value="{{juego.id}}">
+          <button id="likeButton" class="btn btn-link" onclick="darMeGusta()" style="text-decoration: none;">
+            <span id="corazon" style="font-size: 2rem;"
+              data-liked="{{#tieneLike}}true{{/tieneLike}}{{^tieneLike}}false{{/tieneLike}}">
+              {{#tieneLike}}❤️{{/tieneLike}}{{^tieneLike}}🤍{{/tieneLike}}
+            </span>
+            <span id="contadorLikes" class="ms-2 text-danger" style="font-size: 1.5rem;">{{juego.meGusta}}</span>
+          </button>
+        </form>
+      </div>
+        {{/User}}
+      </div>
+    </div>
+  
+  <!-- Descripción -->
+  <div class="text-start w-100">
+    <h5 class="mb-3 mt-3 descripcion-juego word-wrap-break ">Descripción: {{ juego.descripcion }}</h5>
+  </div>
+
+  <!-- Imagen -->
+  <div class="mb-3">
+    <img src="/images/generalImages/imagenAhorcado.png" id="imagenJuego" alt="Imagen del juego"
+      class="img-fluid rounded shadow navbar-custom" style="max-height: 250px;">
+  </div>
+
+  <!-- Intentos -->
+  <p class="intentos-restantes" id="intentosAhorcadoTutorial">
+    <strong>Intentos restantes:</strong>
+    <span id="intentosRestantes">{{ juego.maxIntentos }}</span>
+  </p>
+
+  <!-- Palabra -->
+   <div id="palabraAdivinadaTutorial">
+  <div id="palabraAdivinada" class="d-flex justify-content-center flex-wrap mb-4"></div>
+</div>
+
+  <!-- Teclado -->
+   <div id="tecladoAhorcado">
+  <div id="teclado" class="d-flex flex-column align-items-center"></div>
+</div>
+
+  <!-- Botones -->
+  <div class="mt-4">
+    <button class="btn btn-primary" onclick="reiniciarJuego()" id="btnReiniciarAhorcado">Reiniciar Juego</button>
+    <button class="btn btn-secondary" onclick="descargarPDF()" id="btnDescargarAhorcadoPDF">Descargar en PDF</button>
+    <button class="btn btn-secondary" onclick="window.history.back();" id="btnVolverAhorcado">Volver</button>
+  </div>
+
+  <!-- Resultado -->
+  <div id="mensaje" class="mt-4"></div>
+</div>
+
+<!-- Script con los datos para ser gestionado -->
+
+<script>
+  const juego = {
+    palabra: "{{ juego.palabra }}",
+    maxIntentos: "{{ juego.maxIntentos }}",
+    nombre: "{{ juego.nombre }}",
+    descripcion: "{{ juego.descripcion }}"
+  };
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="/js/ahorcado.js"></script>
+<script src="/js/like.js"></script>
+
+{{> footer}}
